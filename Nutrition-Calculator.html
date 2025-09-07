@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Calculator - Health & Nutrition Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --text: #212121;
+            --text-light: #757575;
+            --background: #f8f9fa;
+            --surface: #ffffff;
+            --border: #e0e0e0;
+            --error: #f44336;
+            --warning: #ff9800;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --gradient: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
+        }
+
+        [data-theme="dark"] {
+            --text: #f5f5f5;
+            --text-light: #bdbdbd;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --border: #424242;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] header {
+            background-color: rgba(30, 30, 30, 0.9);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+
+        nav a:hover:after, nav a.active:after {
+            width: 80%;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+            box-shadow: var(--shadow);
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Ad Slots */
+        .ad-slot {
+            background-color: rgba(0, 0, 0, 0.03);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            margin: 2rem 0;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border);
+            transition: var(--transition);
+        }
+
+        .ad-slot:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .ad-slot p {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .card-title i {
+            font-size: 1.8rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--surface);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Results Card */
+        .results-card {
+            position: sticky;
+            top: 100px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .results-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient);
+        }
+
+        .macro-bar {
+            height: 10px;
+            border-radius: 5px;
+            background-color: var(--border);
+            margin: 1rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .macro-progress {
+            height: 100%;
+            border-radius: 5px;
+            position: absolute;
+            transition: width 1s ease-in-out;
+        }
+
+        .protein { background-color: #4361ee; }
+        .carbs { background-color: #7209b7; }
+        .fats { background-color: #f72585; }
+
+        .macro-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .macro-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--radius);
+            background-color: var(--background);
+            transition: var(--transition);
+        }
+
+        .macro-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .macro-value {
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .macro-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Food Items */
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .food-item:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        /* Meal Planner */
+        .meal-container {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .meal-container:hover {
+            border-color: var(--primary);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .meal-title {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .meal-content {
+            min-height: 120px;
+            padding: 1rem;
+            background-color: var(--background);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .drag-placeholder {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .drag-placeholder:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Progress Chart */
+        .progress-chart {
+            margin-top: 2rem;
+            height: 300px;
+            position: relative;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--surface);
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            text-decoration: none;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--radius);
+            animation: pulse 2s infinite;
+        }
+
+        [data-theme="dark"] .disclaimer {
+            background: linear-gradient(135deg, #332900 0%, #665200 100%);
+        }
+
+        .disclaimer p {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem 0;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--surface);
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+                z-index: 100;
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .macro-list {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* PWA Install Button */
+        .install-btn {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .install-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Nutrition Calculator</span>
+                </div>
+                <nav>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <ul id="navMenu">
+                        <li><a href="#calculator" class="active">Calculator</a></li>
+                        <li><a href="#meal-planner">Meal Planner</a></li>
+                        <li><a href="#recipes">Recipes</a></li>
+                        <li><a href="#progress">Progress</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Header Ad Slot -->
+        <div id="ads-header" class="ad-slot">
+            <p>Advertisement</p>
+        </div>
+
+        <div class="main-content">
+            <main>
+                <section id="calculator" class="card fade-in">
+                    <h2 class="card-title"><i class="fas fa-calculator"></i> Calorie & Macronutrient Calculator</h2>
+                    
+                    <div class="disclaimer">
+                        <p><strong>Disclaimer:</strong> This calculator provides estimates only. Not medical advice — consult a healthcare professional for personalized guidance.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="goal">What is your primary goal?</label>
+                        <select id="goal">
+                            <option value="loss">Weight Loss</option>
+                            <option value="gain">Weight Gain</option>
+                            <option value="maintain">Maintenance</option>
+                            <option value="performance">Performance/Athletic</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Biological Sex</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="male" checked> Male
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="female"> Female
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="other"> Other
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" min="18" max="100" value="30">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="height">Height (cm)</label>
+                        <input type="number" id="height" min="100" max="250" value="170">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" min="30" max="200" value="70">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="activity">Activity Level</label>
+                        <select id="activity">
+                            <option value="1.2">Sedentary (little or no exercise)</option>
+                            <option value="1.375">Lightly active (light exercise 1-3 days/week)</option>
+                            <option value="1.55" selected>Moderately active (moderate exercise 3-5 days/week)</option>
+                            <option value="1.725">Very active (hard exercise 6-7 days/week)</option>
+                            <option value="1.9">Extra active (very hard exercise, physical job)</option>
+                        </select>
+                    </div>
+
+                    <button id="calculateBtn" class="btn"><i class="fas fa-calculator"></i> Calculate My Needs</button>
+                </section>
+
+                <section id="meal-planner" class="card fade-in">
+                    <h2 class="card-title"><i class="fas fa-utensils"></i> Meal Planner</h2>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-tab="food-search">Food Search</div>
+                        <div class="tab" data-tab="custom-food">Custom Food</div>
+                    </div>
+
+                    <div class="tab-content active" id="food-search">
+                        <div class="food-search">
+                            <input type="text" placeholder="Search for food..." id="foodSearch">
+                            <div class="search-results" id="searchResults" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="custom-food">
+                        <div class="form-group">
+                            <label for="foodName">Food Name</label>
+                            <input type="text" id="foodName">
+                        </div>
+                        <div class="form-group">
+                            <label for="foodCalories">Calories</label>
+                            <input type="number" id="foodCalories">
+                        </div>
+                        <div class="form-group">
+                            <label for="foodProtein">Protein (g)</label>
+                            <input type="number" id="foodProtein">
+                        </div>
+                        <div class="form-group">
+                            <label for="foodCarbs">Carbs (g)</label>
+                            <input type="number" id="foodCarbs">
+                        </div>
+                        <div class="form-group">
+                            <label for="foodFat">Fat (g)</label>
+                            <input type="number" id="foodFat">
+                        </div>
+                        <button class="btn" id="addCustomFood"><i class="fas fa-plus"></i> Add Custom Food</button>
+                    </div>
+
+                    <h3 style="margin: 1.5rem 0 1rem;">Daily Meal Plan</h3>
+
+                    <div class="meal-container">
+                        <div class="meal-header">
+                            <div class="meal-title">Breakfast</div>
+                            <div>0 kcal</div>
+                        </div>
+                        <div class="meal-content" data-meal="breakfast">
+                            <div class="drag-placeholder">Drag food items here or click + to add</div>
+                        </div>
+                    </div>
+
+                    <div class="meal-container">
+                        <div class="meal-header">
+                            <div class="meal-title">Lunch</div>
+                            <div>0 kcal</div>
+                        </div>
+                        <div class="meal-content" data-meal="lunch">
+                            <div class="drag-placeholder">Drag food items here or click + to add</div>
+                        </div>
+                    </div>
+
+                    <div class="meal-container">
+                        <div class="meal-header">
+                            <div class="meal-title">Dinner</div>
+                            <div>0 kcal</div>
+                        </div>
+                        <div class="meal-content" data-meal="dinner">
+                            <div class="drag-placeholder">Drag food items here or click + to add</div>
+                        </div>
+                    </div>
+
+                    <div class="meal-container">
+                        <div class="meal-header">
+                            <div class="meal-title">Snacks</div>
+                            <div>0 kcal</div>
+                        </div>
+                        <div class="meal-content" data-meal="snacks">
+                            <div class="drag-placeholder">Drag food items here or click + to add</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <button class="btn"><i class="fas fa-download"></i> Export Plan</button>
+                        <button class="btn btn-outline"><i class="fas fa-trash"></i> Clear All</button>
+                    </div>
+                </section>
+
+                <section id="recipes" class="card fade-in">
+                    <h2 class="card-title"><i class="fas fa-book"></i> Recipe Nutrition Calculator</h2>
+                    
+                    <div class="form-group">
+                        <label for="recipeName">Recipe Name</label>
+                        <input type="text" id="recipeName" placeholder="e.g., Banana Pancakes">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipeServings">Number of Servings</label>
+                        <input type="number" id="recipeServings" value="1" min="1">
+                    </div>
+
+                    <h3 style="margin: 1.5rem 0 1rem;">Ingredients</h3>
+
+                    <div id="ingredientsList"></div>
+
+                    <button class="btn btn-outline" id="addIngredient"><i class="fas fa-plus"></i> Add Ingredient</button>
+
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn" id="calculateRecipe"><i class="fas fa-calculator"></i> Calculate Nutrition</button>
+                    </div>
+
+                    <div id="recipeResults" style="display: none; margin-top: 1.5rem;">
+                        <h3>Nutrition per Serving</h3>
+                        <div class="macro-list">
+                            <div class="macro-item">
+                                <div class="macro-value" id="recipeCalories">0</div>
+                                <div class="macro-label">Calories</div>
+                            </div>
+                            <div class="macro-item">
+                                <div class="macro-value" id="recipeProtein">0g</div>
+                                <div class="macro-label">Protein</div>
+                            </div>
+                            <div class="macro-item">
+                                <div class="macro-value" id="recipeCarbs">0g</div>
+                                <div class="macro-label">Carbs</div>
+                            </div>
+                            <div class="macro-item">
+                                <div class="macro-value" id="recipeFat">0g</div>
+                                <div class="macro-label">Fat</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="progress" class="card fade-in">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i> Progress Tracking</h2>
+                    
+                    <div class="form-group">
+                        <label for="progressDate">Date</label>
+                        <input type="date" id="progressDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="progressWeight">Weight (kg)</label>
+                        <input type="number" id="progressWeight" step="0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="progressNotes">Notes (optional)</label>
+                        <textarea id="progressNotes" rows="2"></textarea>
+                    </div>
+
+                    <button class="btn" id="saveProgress"><i class="fas fa-save"></i> Save Entry</button>
+
+                    <div class="progress-chart">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Health Content for SEO -->
+                <section class="card fade-in">
+                    <h2>Understanding Your Nutritional Needs</h2>
+                    <p>Proper nutrition is essential for maintaining good health and achieving your fitness goals. Whether you want to lose weight, gain muscle, or maintain your current physique, understanding your calorie and macronutrient needs is the first step.</p>
+                    
+                    <h3>How Calorie Calculation Works</h3>
+                    <p>Our calculator uses the Mifflin-St Jeor equation, considered the most accurate for estimating basal metabolic rate (BMR) - the number of calories your body needs at rest. We then multiply your BMR by an activity factor to determine your Total Daily Energy Expenditure (TDEE).</p>
+                    
+                    <h3>Macronutrient Distribution</h3>
+                    <p>Macronutrients (protein, carbohydrates, and fats) are the building blocks of your diet. The ideal distribution depends on your goals:</p>
+                    <ul>
+                        <li><strong>Weight Loss:</strong> Higher protein to preserve muscle, moderate fat, lower carbs</li>
+                        <li><strong>Weight Gain:</strong> Higher carbs for energy, adequate protein for muscle growth</li>
+                        <li><strong>Maintenance:</strong> Balanced distribution of all macros</li>
+                        <li><strong>Performance:</strong> Higher carbs for energy, increased protein for recovery</li>
+                    </ul>
+                    
+                    <h3>Tracking Your Progress</h3>
+                    <p>Consistent tracking of your nutrition and weight provides valuable feedback. Research shows that people who track their food intake are more successful at reaching their health goals. Remember that progress isn't always linear - weight fluctuations are normal.</p>
+                    
+                    <p class="disclaimer">Always consult with a healthcare professional before making significant changes to your diet or exercise routine, especially if you have pre-existing health conditions.</p>
+                </section>
+            </main>
+
+            <aside>
+                <div class="results-card fade-in">
+                    <h2 class="card-title"><i class="fas fa-chart-pie"></i> Your Nutrition Plan</h2>
+                    
+                    <div class="macro-bar">
+                        <div class="macro-progress protein" style="width: 30%"></div>
+                        <div class="macro-progress carbs" style="width: 50%"></div>
+                        <div class="macro-progress fats" style="width: 20%"></div>
+                    </div>
+                    
+                    <div class="macro-list">
+                        <div class="macro-item">
+                            <div class="macro-value" id="proteinValue">0g</div>
+                            <div class="macro-label">Protein</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value" id="carbsValue">0g</div>
+                            <div class="macro-label">Carbs</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value" id="fatValue">0g</div>
+                            <div class="macro-label">Fat</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <div style="font-size: 2.5rem; font-weight: 700;" id="totalCalories">0</div>
+                        <div style="color: var(--text-light);">Calories per day</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="calorieAdjustment">Calorie Adjustment</label>
+                        <input type="range" id="calorieAdjustment" min="-500" max="500" step="50" value="0">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>-500</span>
+                            <span id="adjustmentValue">0</span>
+                            <span>+500</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" style="width: 100%;"><i class="fas fa-save"></i> Save Plan</button>
+                </div>
+
+                <!-- Sidebar Ad Slot -->
+                <div id="ads-sidebar" class="ad-slot">
+                    <p>Advertisement</p>
+                </div>
+
+                <div class="card fade-in">
+                    <h2 class="card-title"><i class="fas fa-fire"></i> Today's Summary</h2>
+                    
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <div style="font-size: 2rem; font-weight: 700;">0 / <span id="dailyCaloriesTarget">0</span></div>
+                        <div style="color: var(--text-light);">Calories</div>
+                    </div>
+                    
+                    <div class="macro-list">
+                        <div class="macro-item">
+                            <div class="macro-value">0g</div>
+                            <div class="macro-label">Protein</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">0g</div>
+                            <div class="macro-label">Carbs</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">0g</div>
+                            <div class="macro-label">Fat</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-outline" style="width: 100%;"><i class="fas fa-chart-bar"></i> View Detailed Log</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer Ad Slot -->
+        <div id="ads-footer" class="ad-slot">
+            <p>Advertisement</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nutrition Calculator</h3>
+                    <p>Tools and resources to help you achieve your health and nutrition goals through science-based calculations.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#calculator">Calorie Calculator</a></li>
+                        <li><a href="#meal-planner">Meal Planner</a></li>
+                        <li><a href="#recipes">Recipe Calculator</a></li>
+                        <li><a href="#progress">Progress Tracking</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Nutrition Calculator. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="install-btn" id="installBtn" style="display: none;">
+        <i class="fas fa-download"></i>
+    </button>
+
+    <script>
+        // Sample food database
+        const foodDatabase = [
+            { id: 1, name: "Apple", calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
+            { id: 2, name: "Banana", calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3 },
+            { id: 3, name: "Chicken Breast (100g)", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+            { id: 4, name: "White Rice (cooked, 100g)", calories: 130, protein: 2.7, carbs: 28, fat: 0.3 },
+            { id: 5, name: "Broccoli (100g)", calories: 34, protein: 2.8, carbs: 7, fat: 0.4 },
+            { id: 6, name: "Egg (large)", calories: 72, protein: 6.3, carbs: 0.6, fat: 4.8 },
+            { id: 7, name: "Salmon (100g)", calories: 208, protein: 20, carbs: 0, fat: 13 },
+            { id: 8, name: "Almonds (28g)", calories: 164, protein: 6, carbs: 6, fat: 14 },
+            { id: 9, name: "Oatmeal (cooked, 100g)", calories: 68, protein: 2.4, carbs: 12, fat: 1.4 },
+            { id: 10, name: "Whole Wheat Bread (slice)", calories: 81, protein: 3.9, carbs: 13.8, fat: 1.1 }
+        ];
+
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const calorieAdjustment = document.getElementById('calorieAdjustment');
+        const adjustmentValue = document.getElementById('adjustmentValue');
+        const foodSearch = document.getElementById('foodSearch');
+        const searchResults = document.getElementById('searchResults');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const addIngredientBtn = document.getElementById('addIngredient');
+        const ingredientsList = document.getElementById('ingredientsList');
+        const calculateRecipeBtn = document.getElementById('calculateRecipe');
+        const recipeResults = document.getElementById('recipeResults');
+        const saveProgressBtn = document.getElementById('saveProgress');
+
+        // Theme Toggle
+        themeToggle.addEventListener('click', () => {
+            document.body.setAttribute('data-theme', 
+                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            themeToggle.innerHTML = document.body.getAttribute('data-theme') === 'dark' 
+                ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            
+            // Save theme preference
+            localStorage.setItem('theme', document.body.getAttribute('data-theme'));
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.setAttribute('data-theme', savedTheme);
+            themeToggle.innerHTML = savedTheme === 'dark' 
+                ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        // Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
+        });
+
+        // Tab Switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Show correct content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Calorie Adjustment Slider
+        calorieAdjustment.addEventListener('input', () => {
+            adjustmentValue.textContent = parseInt(calorieAdjustment.value) > 0 
+                ? `+${calorieAdjustment.value}` : calorieAdjustment.value;
+            updateMacros();
+        });
+
+        // Food Search
+        foodSearch.addEventListener('input', () => {
+            const query = foodSearch.value.toLowerCase();
+            if (query.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            const results = foodDatabase.filter(food => 
+                food.name.toLowerCase().includes(query)
+            );
+            
+            displaySearchResults(results);
+        });
+
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+            } else {
+                results.forEach(food => {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.innerHTML = `
+                        <div><strong>${food.name}</strong></div>
+                        <div>${food.calories} kcal | P: ${food.protein}g C: ${food.carbs}g F: ${food.fat}g</div>
+                    `;
+                    item.addEventListener('click', () => {
+                        addFoodToMeal(food);
+                        foodSearch.value = '';
+                        searchResults.style.display = 'none';
+                    });
+                    searchResults.appendChild(item);
+                });
+            }
+            
+            searchResults.style.display = 'block';
+        }
+
+        function addFoodToMeal(food) {
+            // This would add the food to the selected meal
+            console.log('Adding food:', food);
+        }
+
+        // Add Ingredient to Recipe
+        addIngredientBtn.addEventListener('click', () => {
+            const ingredientElement = document.createElement('div');
+            ingredientElement.className = 'form-group';
+            ingredientElement.innerHTML = `
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem;">
+                    <input type="text" placeholder="Ingredient name">
+                    <input type="number" placeholder="Amount" min="0" step="0.1">
+                    <select>
+                        <option value="g">g</option>
+                        <option value="kg">kg</option>
+                        <option value="ml">ml</option>
+                        <option value="l">l</option>
+                        <option value="cup">cup</option>
+                        <option value="tbsp">tbsp</option>
+                        <option value="tsp">tsp</option>
+                        <option value="item">item</option>
+                    </select>
+                </div>
+            `;
+            ingredientsList.appendChild(ingredientElement);
+        });
+
+        // Calculate Recipe Nutrition
+        calculateRecipeBtn.addEventListener('click', () => {
+            // This would calculate nutrition based on ingredients
+            document.getElementById('recipeCalories').textContent = '245';
+            document.getElementById('recipeProtein').textContent = '15g';
+            document.getElementById('recipeCarbs').textContent = '30g';
+            document.getElementById('recipeFat').textContent = '8g';
+            recipeResults.style.display = 'block';
+        });
+
+        // Calculate Calories and Macros
+        calculateBtn.addEventListener('click', () => {
+            calculateCalories();
+        });
+
+        function calculateCalories() {
+            // Get form values
+            const age = parseInt(document.getElementById('age').value);
+            const height = parseInt(document.getElementById('height').value);
+            const weight = parseInt(document.getElementById('weight').value);
+            const activity = parseFloat(document.getElementById('activity').value);
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const goal = document.getElementById('goal').value;
+            
+            // Calculate BMR (Mifflin-St Jeor Equation)
+            let bmr;
+            if (gender === 'male') {
+                bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+            } else {
+                bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+            }
+            
+            // Calculate TDEE
+            const tdee = bmr * activity;
+            
+            // Adjust based on goal
+            let calorieTarget = tdee;
+            switch(goal) {
+                case 'loss':
+                    calorieTarget = tdee - 500;
+                    break;
+                case 'gain':
+                    calorieTarget = tdee + 500;
+                    break;
+                case 'performance':
+                    calorieTarget = tdee + 300;
+                    break;
+            }
+            
+            // Calculate macros (40/30/30 distribution for demonstration)
+            const protein = Math.round((calorieTarget * 0.3) / 4);
+            const carbs = Math.round((calorieTarget * 0.4) / 4);
+            const fats = Math.round((calorieTarget * 0.3) / 9);
+            
+            // Update UI
+            document.getElementById('totalCalories').textContent = Math.round(calorieTarget);
+            document.getElementById('proteinValue').textContent = `${protein}g`;
+            document.getElementById('carbsValue').textContent = `${carbs}g`;
+            document.getElementById('fatValue').textContent = `${fats}g`;
+            document.getElementById('dailyCaloriesTarget').textContent = Math.round(calorieTarget);
+            
+            // Update macro bars with animation
+            setTimeout(() => {
+                document.querySelector('.protein').style.width = '30%';
+                document.querySelector('.carbs').style.width = '40%';
+                document.querySelector('.fats').style.width = '30%';
+            }, 100);
+        }
+
+        // Progress Tracking
+        saveProgressBtn.addEventListener('click', () => {
+            const date = document.getElementById('progressDate').value;
+            const weight = parseFloat(document.getElementById('progressWeight').value);
+            const notes = document.getElementById('progressNotes').value;
+            
+            if (!date || isNaN(weight)) {
+                alert('Please enter valid date and weight values.');
+                return;
+            }
+            
+            // Save to localStorage
+            let progressData = JSON.parse(localStorage.getItem('progressData')) || [];
+            progressData.push({ date, weight, notes });
+            localStorage.setItem('progressData', JSON.stringify(progressData));
+            
+            // Clear form
+            document.getElementById('progressWeight').value = '';
+            document.getElementById('progressNotes').value = '';
+        });
+
+        // Initialize
+        document.getElementById('progressDate').valueAsDate = new Date();
+        calculateCalories();
+
+        // PWA functionality
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                installBtn.style.display = 'none';
+            }
+            
+            deferredPrompt = null;
+        });
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach(element => {
+                element.style.opacity = 1;
+            });
+        });
+    </script>
+</body>
+</html>
