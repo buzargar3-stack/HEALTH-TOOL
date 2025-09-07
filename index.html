@@ -94,6 +94,7 @@
             background-clip: text;
             color: transparent;
             transition: var(--transition);
+            text-decoration: none;
         }
 
         .logo:hover {
@@ -241,6 +242,7 @@
             transition: var(--transition);
             text-align: center;
             box-shadow: var(--shadow);
+            text-decoration: none;
         }
 
         .btn:hover {
@@ -542,6 +544,7 @@
             background: var(--background);
             color: var(--text);
             transition: var(--transition);
+            text-decoration: none;
         }
 
         .social-links a:hover {
@@ -643,28 +646,28 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">
+                <a href="#" class="logo">
                     <i class="fas fa-apple-alt"></i>
                     <span>NutriCalc</span>
-                </div>
+                </a>
                 <nav>
                     <button class="mobile-menu-btn" id="mobileMenuBtn">
                         <i class="fas fa-bars"></i>
                     </button>
                     <ul id="navMenu">
                         <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#">Calculator</a></li>
-                        <li><a href="#">Meal Plans</a></li>
-                        <li><a href="#">Recipes</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="#calculator">Calculator</a></li>
+                        <li><a href="#meal-planner">Meal Plans</a></li>
+                        <li><a href="#recipes">Recipes</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </nav>
                 <div class="header-actions">
                     <button class="theme-toggle" id="themeToggle">
                         <i class="fas fa-moon"></i>
                     </button>
-                    <a href="#" class="btn">Sign Up</a>
+                    <a href="#signup" class="btn">Sign Up</a>
                 </div>
             </div>
         </div>
@@ -677,8 +680,8 @@
                     <h1>Track Your Nutrition, Transform Your Health</h1>
                     <p>Calculate your calorie needs, plan meals, and achieve your health goals with our comprehensive nutrition tools.</p>
                     <div class="hero-buttons">
-                        <a href="#" class="btn btn-primary"><i class="fas fa-calculator"></i> Get Started</a>
-                        <a href="#" class="btn btn-outline"><i class="fas fa-play-circle"></i> Learn More</a>
+                        <a href="#calculator" class="btn btn-primary"><i class="fas fa-calculator"></i> Get Started</a>
+                        <a href="#how-it-works" class="btn btn-outline"><i class="fas fa-play-circle"></i> Learn More</a>
                     </div>
                 </div>
                 <div class="hero-image fade-in delay-1">
@@ -701,6 +704,7 @@
                     </div>
                     <h3>Calorie Calculator</h3>
                     <p>Calculate your daily calorie needs based on your goals, activity level, and body metrics.</p>
+                    <a href="#calculator" class="btn btn-outline" style="margin-top: 1rem;">Try Calculator</a>
                 </div>
                 <div class="feature-card fade-in delay-2">
                     <div class="feature-icon">
@@ -708,6 +712,7 @@
                     </div>
                     <h3>Meal Planner</h3>
                     <p>Plan your meals with our extensive food database and track your macro intake.</p>
+                    <a href="#meal-planner" class="btn btn-outline" style="margin-top: 1rem;">Plan Meals</a>
                 </div>
                 <div class="feature-card fade-in delay-3">
                     <div class="feature-icon">
@@ -715,12 +720,13 @@
                     </div>
                     <h3>Progress Tracking</h3>
                     <p>Monitor your progress with detailed charts and analytics to stay motivated.</p>
+                    <a href="#progress" class="btn btn-outline" style="margin-top: 1rem;">View Demo</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="how-it-works">
+    <section id="how-it-works" class="how-it-works">
         <div class="container">
             <div class="section-header fade-in">
                 <h2>How It Works</h2>
@@ -730,18 +736,22 @@
                 <div class="step fade-in delay-1">
                     <h3>Create Your Profile</h3>
                     <p>Enter your details, goals, and dietary preferences to personalize your experience.</p>
+                    <a href="#signup" class="btn btn-outline" style="margin-top: 1rem;">Sign Up Now</a>
                 </div>
                 <div class="step fade-in delay-2">
                     <h3>Calculate Your Needs</h3>
                     <p>Use our calculator to determine your daily calorie and macronutrient requirements.</p>
+                    <a href="#calculator" class="btn btn-outline" style="margin-top: 1rem;">Calculate Now</a>
                 </div>
                 <div class="step fade-in delay-3">
                     <h3>Plan Your Meals</h3>
                     <p>Create meal plans based on your nutritional needs and food preferences.</p>
+                    <a href="#meal-planner" class="btn btn-outline" style="margin-top: 1rem;">Plan Meals</a>
                 </div>
                 <div class="step fade-in">
                     <h3>Track Your Progress</h3>
                     <p>Monitor your results and adjust your plan as needed to reach your goals.</p>
+                    <a href="#progress" class="btn btn-outline" style="margin-top: 1rem;">Track Progress</a>
                 </div>
             </div>
         </div>
@@ -798,34 +808,34 @@
         <div class="container">
             <h2 class="fade-in">Ready to Transform Your Health?</h2>
             <p class="fade-in delay-1">Join thousands of satisfied users who have achieved their health goals with NutriCalc.</p>
-            <a href="#" class="btn btn-primary fade-in delay-2"><i class="fas fa-user-plus"></i> Get Started for Free</a>
+            <a href="#signup" class="btn btn-primary fade-in delay-2"><i class="fas fa-user-plus"></i> Get Started for Free</a>
         </div>
     </section>
 
-    <footer>
+    <footer id="contact">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <div class="logo">
+                    <a href="#" class="logo">
                         <i class="fas fa-apple-alt"></i>
                         <span>NutriCalc</span>
-                    </div>
+                    </a>
                     <p>Helping you achieve your health and nutrition goals through accurate calculations and personalized plans.</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href="#">Home</a></li>
-                        <li><a href="#">Calculator</a></li>
-                        <li><a href="#">Meal Plans</a></li>
-                        <li><a href="#">Recipes</a></li>
-                        <li><a href="#">Blog</a></li>
+                        <li><a href="#calculator">Calculator</a></li>
+                        <li><a href="#meal-planner">Meal Plans</a></li>
+                        <li><a href="#recipes">Recipes</a></li>
+                        <li><a href="#blog">Blog</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -841,9 +851,9 @@
                 <div class="footer-section">
                     <h3>Contact Us</h3>
                     <ul>
-                        <li><i class="fas fa-envelope"></i> support@nutricalc.com</li>
-                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Health St, Nutrition City</li>
+                        <li><a href="mailto:support@nutricalc.com"><i class="fas fa-envelope"></i> support@nutricalc.com</a></li>
+                        <li><a href="tel:+15551234567"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                        <li><a href="https://maps.google.com" target="_blank"><i class="fas fa-map-marker-alt"></i> 123 Health St, Nutrition City</a></li>
                     </ul>
                 </div>
             </div>
